@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.shaun.androidreceipts.MainActivity">
+
+    <TextView
+        android:id="@+id/myFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <CheckBox
+        android:text="Refund"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/refund"
+        android:layout_alignBottom="@+id/amount"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="18dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/myFile"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/myFile" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textCapWords"
+        android:ems="10"
+        android:id="@+id/payee"
+        android:hint="Payee"
+        android:layout_below="@+id/myFile"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp"
+        android:selectAllOnFocus="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:id="@+id/receiptDate"
+        android:layout_below="@+id/payee"
+        android:layout_alignParentStart="true"
+        android:selectAllOnFocus="true"
+        android:hint="YYYYMMDD" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/amount"
+        android:layout_below="@+id/receiptDate"
+        android:layout_alignParentStart="true"
+        android:selectAllOnFocus="true"
+        android:hint="Amount" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/picture_frame"
+        android:layout_marginRight="20dp"
+        android:id="@+id/mImageView"
+        android:scaleType="fitStart"
+        android:adjustViewBounds="false"
+        android:rotation="90"
+        android:cropToPadding="true"
+        android:layout_below="@+id/amount"
+        android:layout_marginTop="33dp"
+        android:layout_alignEnd="@+id/buttonConnect"
+        android:layout_toEndOf="@+id/buttonConnect"
+        android:layout_above="@+id/ActivateCamera"
+        android:layout_marginBottom="10dp"
+        android:layout_alignStart="@+id/ActivateCamera" />
+
+    <Button
+        android:text="Transfer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonConnect"
+        android:layout_marginRight="54dp"
+        android:onClick="transmitFile"
+        android:layout_alignBaseline="@+id/ActivateCamera"
+        android:layout_alignBottom="@+id/ActivateCamera"
+        android:layout_alignEnd="@+id/refund" />
+
+    <Button
+        android:text="Activate Camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ActivateCamera"
+        android:onClick="takePicture"
+        android:visibility="visible"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="24dp"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>
