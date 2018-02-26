@@ -11,13 +11,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.shaun.androidreceipts.MainActivity">
 
-    <TextView
-        android:id="@+id/myFile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <CheckBox
-        android:text="Refund"
+        android:text="@string/Refund"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/refund"
@@ -30,7 +25,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/myFile"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/myFile" />
+        android:layout_toEndOf="@id/myFile" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -38,7 +33,7 @@
         android:inputType="textCapWords"
         android:ems="10"
         android:id="@+id/payee"
-        android:hint="Payee"
+        android:hint="@string/Payee"
         android:layout_below="@+id/myFile"
         android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
@@ -53,53 +48,54 @@
         android:layout_below="@+id/payee"
         android:layout_alignParentStart="true"
         android:selectAllOnFocus="true"
-        android:hint="YYYYMMDD" />
+        android:hint="@string/ReceiptDateFmt" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
         android:ems="10"
-        android:id="@+id/amount"
-        android:layout_below="@+id/receiptDate"
+        android:id="@id/amount"
+        android:layout_below="@id/receiptDate"
         android:layout_alignParentStart="true"
         android:selectAllOnFocus="true"
-        android:hint="Amount" />
+        android:hint="@string/AmountFieldTip" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/picture_frame"
-        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
         android:id="@+id/mImageView"
         android:scaleType="fitStart"
         android:adjustViewBounds="false"
         android:rotation="90"
         android:cropToPadding="true"
-        android:layout_below="@+id/amount"
+        android:layout_below="@id/amount"
         android:layout_marginTop="33dp"
         android:layout_alignEnd="@+id/buttonConnect"
-        android:layout_toEndOf="@+id/buttonConnect"
+        android:layout_toEndOf="@id/buttonConnect"
         android:layout_above="@+id/ActivateCamera"
         android:layout_marginBottom="10dp"
-        android:layout_alignStart="@+id/ActivateCamera" />
+        android:layout_alignStart="@id/ActivateCamera"
+        android:contentDescription="@string/ImageViewTxt" />
 
     <Button
-        android:text="Transfer"
+        android:text="@string/ButtonTransferTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonConnect"
-        android:layout_marginRight="54dp"
+        android:id="@id/buttonConnect"
+        android:layout_marginEnd="54dp"
         android:onClick="transmitFile"
-        android:layout_alignBaseline="@+id/ActivateCamera"
-        android:layout_alignBottom="@+id/ActivateCamera"
-        android:layout_alignEnd="@+id/refund" />
+        android:layout_alignBaseline="@id/ActivateCamera"
+        android:layout_alignBottom="@id/ActivateCamera"
+        android:layout_alignEnd="@id/refund" />
 
     <Button
-        android:text="Activate Camera"
+        android:text="@string/ButtonCameraTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ActivateCamera"
+        android:id="@id/ActivateCamera"
         android:onClick="takePicture"
         android:visibility="visible"
         android:layout_alignParentStart="true"

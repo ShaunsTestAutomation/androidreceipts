@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Image Receipts</string>
+    <string name="Refund">Refund</string>
+    <string name="Payee">Payee</string>
+    <string name="ReceiptDateFmt">YYYYMMDD</string>
+    <string name="AmountFieldTip">Amount</string>
+    <string name="ButtonTransferTxt">Transfer</string>
+    <string name="ButtonCameraTxt">Camera</string>
+    <string name="ImageViewTxt">Receipt Image</string>
 </resources>
