@@ -13,8 +13,7 @@ The user can then choose to transfer the image file to another device via blueto
 
 The file transfer is performed with the use of the intent from the package "com.android.bluetooth"
 
+Each time the app is started (not resumed), i.e. onCreate() all cached images from the previous use are deleted so as not to consume too much storage resource.
 
 #Issues
-There is lots of redundent code to handle blue tooth during startup which was written before the use of hte package manager was discovered.
-This code should be removed.
 There is nothing in the way of error handling implemented.  It works for a very specific purpose.  The code needs to be made more robust.
