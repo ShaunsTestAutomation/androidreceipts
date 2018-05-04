@@ -1,11 +1,6 @@
 package com.example.shaun.androidreceipts;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
@@ -28,12 +23,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
-import static com.example.shaun.androidreceipts.R.id.activity_main;
-import static com.example.shaun.androidreceipts.R.id.image;
-import static com.example.shaun.androidreceipts.R.id.mImageView;
-import static com.example.shaun.androidreceipts.R.id.payee;
+import static android.content.Intent.ACTION_SEND;
+import static android.content.Intent.EXTRA_STREAM;
+
 
 /** This app is designed to take photographs (of receipts) and name them conveniently
  * describing the:
@@ -48,40 +41,12 @@ public class MainActivity extends AppCompatActivity {
     String mCurrentPhotoPath;
     private static final String TAG = MainActivity.class.getSimpleName();
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    static final int REQUEST_ENABLE_BT = 2;
-    //Get the bluetooth adapter so it is accessible throughout the class.
-    private BluetoothAdapter mBlueToothAdapter = BluetoothAdapter.getDefaultAdapter();
-    private String myLaptop = "";
     File image;
-    /* TODO - listen for the ACTION_STATE_CHANGED broadcast intent so that the app can detect
-     *          when the BT status changes and can react to it.
-     * TODO - work out when the blue tooth discovery scan has completed and restarted.  Once this happens there is
-     *          no point carrying on consuming resources.  Display an error and stop discovery.
-     *          Implement a button to re-attempt connection in the case where the remote device cant be found.
-     * */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //now check for bluetooth adaptor
-        //BluetoothAdapter mBlueToothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBlueToothAdapter == null){
-            //bluetooth not supported - report an error and exit app
-            super.onDestroy();
-        }
-        Log.d(TAG, "MY DEBUG: About to check if bluetooth is enabled");
-        if (!mBlueToothAdapter.isEnabled()){
-            Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBTIntent, REQUEST_ENABLE_BT);
-        }
-        //Register for broadcasts when a device is connected
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(mReceiver,filter);
-        if (mBlueToothAdapter.isDiscovering()){
-            mBlueToothAdapter.cancelDiscovery();
-        }
-        //mBlueToothAdapter.startDiscovery();
 
         //clean up the photo directory before the app launches
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -106,35 +71,14 @@ public class MainActivity extends AppCompatActivity {
             fileOrDirectory.delete();
         }
     }
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)){
-                //Discovery has found a BT device.  Get the BT device object and info
-                //from its intent.
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress();
-                Log.d(TAG, "New BlueTooth Device found by the app:\n Name: " + deviceName + " Address: " + deviceHardwareAddress);
-                if (deviceName == null) {
-                    Log.d(TAG,"Wow!!! a device broadcasting bluetooth with no name");
-                }
-                else {
-                    if (deviceName.equals("LAPTOP-T4E2TN63")) {
-                        mBlueToothAdapter.cancelDiscovery();
-                    }
-                }
-            }
-        }
-    };
+
     public void transmitFile(View view){
         //if this method has been called then the laptop MAC address has been obtained and passed
         //We need to connect and open an RFCOMM channel which we can keep open
         Intent intent = new Intent();
-        intent.setAction(intent.ACTION_SEND);
+        intent.setAction(ACTION_SEND);
         intent.setType("*/*");
-        intent.putExtra(intent.EXTRA_STREAM, Uri.fromFile(image));
+        intent.putExtra(EXTRA_STREAM, Uri.fromFile(image));
 
         PackageManager pm = getPackageManager();
         List<ResolveInfo> appsList = pm.queryIntentActivities(intent, 0);
@@ -152,10 +96,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if (!found){
+                Log.d(TAG,"Bluetooth is not supported on the device, about to pop-up toast");
                 Toast.makeText(this, "BT intent not found on device", Toast.LENGTH_SHORT).show();
             }
-            intent.setClassName(packageName, className);
-            startActivity(intent);
+            else {
+                intent.setClassName(packageName, className);
+                startActivity(intent);
+            }
         }
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -174,34 +121,6 @@ public class MainActivity extends AppCompatActivity {
             mImageView.setImageURI(photoURI);
             TextView lbl = (TextView) findViewById(R.id.myFile);
             lbl.setText(mCurrentPhotoPath);
-        }
-
-        if (requestCode == REQUEST_ENABLE_BT && resultCode == RESULT_OK){
-            //You should only get here if BT was off and now it is on.  what about the case where it was already on?
-            Log.d(TAG, "Shaun says BlueTooth is now enabled, and app knows about it - Happy days!!!");
-            //Now we need to see if the paired device is already known
-            Set<BluetoothDevice> pairedDevices = BluetoothAdapter.getDefaultAdapter().getBondedDevices();
-            if (pairedDevices.size() > 0){
-                Log.d(TAG,"All known blue tooth devices are:");
-                for (BluetoothDevice device:pairedDevices){
-                    String deviceName = device.getName();
-                    String deviceHardwareAddress = device.getAddress();
-                    Log.d(TAG, "Name: " + deviceName + " Address: " + deviceHardwareAddress);
-                    if (deviceName.equals("LAPTOP-T4E2TN63")){
-                        mBlueToothAdapter.cancelDiscovery();
-                        myLaptop = deviceName;
-                        break;
-                    }
-                }
-            }
-            if (myLaptop.isEmpty()){
-                mBlueToothAdapter.startDiscovery();
-                Log.d(TAG, "starting Discovery process");
-            }
-            //mBlueToothAdapter.startDiscovery();
-        }
-        if (requestCode==REQUEST_ENABLE_BT && resultCode==RESULT_CANCELED){
-            Log.d(TAG,"Seems that the user did not turn on Blue Tooth, or the devices BT adaptor did not turn on properly");
         }
     }
 
@@ -223,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                  photoFile = createImageFile();
                  } catch (IOException ex) {
                  // Error occurred while creating the File
-                    Log.e(TAG, "Coudl not create space in android file system to store image");
+                    Log.e(TAG, "Could not create space in android file system to store image");
                  }
              // Continue only if the File was successfully created
              if (photoFile != null) {
@@ -239,8 +158,6 @@ public class MainActivity extends AppCompatActivity {
 
     public File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        //String imageFileName = "JPEG_" + timeStamp + "_";
         EditText myPayer = (EditText) findViewById(R.id.payee);
         EditText myDate = (EditText) findViewById(R.id.receiptDate);
         EditText myAmount = (EditText) findViewById(R.id.amount);
@@ -267,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy(){
         super.onDestroy();
         Log.d(TAG, "closing application now - Adios!!!!!");
-        unregisterReceiver(mReceiver);
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig){
@@ -280,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
         else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             Log.d(TAG, "Now Portrait orientation");
             ImageView mImageView = (ImageView) findViewById(R.id.mImageView);
-            //mImageView.setImageBitmap(imageBitmap);
             Uri photoURI = Uri.parse(mCurrentPhotoPath);
             mImageView.setImageDrawable(null);
             mImageView.setImageURI(photoURI);
@@ -291,14 +206,3 @@ public class MainActivity extends AppCompatActivity {
             Log.w(TAG, "unknown orientation" + orientation);
     }
 }
-
-    /*    public void reConnect(View view) {
-        if (mBlueToothAdapter.isDiscovering()) {
-            Log.d(TAG, "already discovering, why are you trying to rediscover. Must be something wrong.  Stopping discovery");
-            mBlueToothAdapter.cancelDiscovery();
-        }
-        else{
-            mBlueToothAdapter.startDiscovery();
-        }
-    }
-    */
