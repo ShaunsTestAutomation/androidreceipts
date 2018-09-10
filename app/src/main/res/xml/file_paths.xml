@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
-        <external-path name="my_images" path="Android/data/com.example.shaun.androidreceipts/files/Pictures" />
+        <!-- Replacing this declaration with relative path of current directory and name of external files.
+            This is in line with the code example from
+            https://medium.com/@ali.muzaffar/what-is-android-os-fileuriexposedexception-and-what-you-can-do-about-it-70b9eb17c6d0
+            <external-path name="my_images" path="Android/data/com.example.shaun.androidreceipts/files/Pictures" />
+        -->
+        <external-path name="external_files" path="." />
 </paths>

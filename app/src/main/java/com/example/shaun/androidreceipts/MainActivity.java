@@ -78,7 +78,15 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setAction(ACTION_SEND);
         intent.setType("*/*");
-        intent.putExtra(EXTRA_STREAM, Uri.fromFile(image));
+        /* In Android version 24 this line of code throws an exception as it assumes the remote target
+        will have access to the URI.  This is no longer valid and better coding practice is now enforced.
+        Remove this line of code
+         */
+        //intent.putExtra(EXTRA_STREAM, Uri.fromFile(image));
+        /* and replace with */
+        Uri apkURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", image );
+        intent.putExtra(EXTRA_STREAM, apkURI);
+        intent.addFlags(intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         PackageManager pm = getPackageManager();
         List<ResolveInfo> appsList = pm.queryIntentActivities(intent, 0);
